@@ -81,8 +81,8 @@
             <md-icon>thermostat</md-icon>
             <div class="card">
               <div class="rating">
-                <h2><span class="counter" data-target="90">35</span><sub>°C</sub></h2>
-                <div class="block" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
+                <h2><span class="counter">{{ thingspeak.field1 }}</span><sub>°C</sub></h2>
+                <div class="block_temp" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
               </div>
             </div>
           </template>
@@ -98,7 +98,7 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>date_range</md-icon>
-              Last 2 Min.
+              Last 3 Min.
             </div>
           </template>
         </stats-card>
@@ -108,21 +108,24 @@
       >
         <stats-card data-background-color="orange">
           <template slot="header">
-            <md-icon>content_copy</md-icon>
+            <md-icon>opacity</md-icon>
+            <div class="card">
+              <div class="rating">
+                <h2><span class="counter">{{ thingspeak.field2 }}</span><sub>%</sub></h2>
+                <div class="block_hum" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
+              </div>
+            </div>
           </template>
 
           <template slot="content">
-            <p class="category">Used Space</p>
-            <h3 class="title">
-              49/50
-              <small>GB</small>
-            </h3>
+            <h5 class="category">Humidity</h5>
+            <h3 class="title"></h3>
           </template>
        
           <template slot="footer">
             <div class="stats">
-              <md-icon class="text-danger">warning</md-icon>
-              <a href="#pablo">Get More Space...</a>
+              <md-icon>date_range</md-icon>
+              Last 3 Min.
             </div>
           </template>
         </stats-card>
@@ -132,18 +135,24 @@
       >
         <stats-card data-background-color="red">
           <template slot="header">
-            <md-icon>info_outline</md-icon>
+            <md-icon>eco</md-icon>
+            <div class="card">
+              <div class="rating">
+                <h2><span class="counter">{{ thingspeak.field3 }}</span></h2>
+                <div class="block_eco" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
+              </div>
+            </div>
           </template>
 
           <template slot="content">
-            <p class="category">Fixed Issues</p>
-            <h3 class="title">75</h3>
+            <h5 class="category">Soil Moisture</h5>
+            <h3 class="title"></h3>
           </template>
 
           <template slot="footer">
             <div class="stats">
-              <md-icon>local_offer</md-icon>
-              Tracked from Github
+              <md-icon>date_range</md-icon>
+              Last 3 Min.
             </div>
           </template>
         </stats-card>
@@ -153,18 +162,23 @@
       >
         <stats-card data-background-color="blue">
           <template slot="header">
-            <i class="fab fa-twitter"></i>
+            <md-icon>local_florist</md-icon>
+            <div class="card">
+              <div class="rating">
+                <h2><span class="count">67</span><sub>Days</sub></h2>
+              </div>
+            </div>
           </template>
 
           <template slot="content">
-            <p class="category">Folowers</p>
-            <h3 class="title">+245</h3>
+            <h5 class="category">Life of vase</h5>
+            <h3 class="title"></h3>
           </template>
 
           <template slot="footer">
             <div class="stats">
               <md-icon>update</md-icon>
-              Just Updated
+              2023/10/20
             </div>
           </template>
         </stats-card>
@@ -209,6 +223,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import {
   StatsCard,
   ChartCard,
@@ -227,6 +242,7 @@ export default {
   },
   data() {
     return {
+      thingspeak: [],
       numbers: [],
       dailySalesChart: {
         data: {
@@ -319,6 +335,16 @@ export default {
   mounted() {
   },
   methods: {
+    fetchData() {
+      const url = 'https://api.thingspeak.com/channels/2389978/feeds.json?api_key=7F5ZOP8I2C34NSN9&results=2';
+      axios.get(url)
+        .then(response => {
+          this.thingspeak = response.data.feeds[1];
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
     getItemStyle(event){
       return {
         transform: `rotate(${7.2*event}deg)`,
@@ -327,6 +353,7 @@ export default {
     },
   },
   created() {
+    this.fetchData();
     this.numbers = Array.from(Array(51).keys());
   },
 };
@@ -343,7 +370,7 @@ export default {
   width: 100%;
   height: 100%;
 }
-.card .rating .block{
+.card .rating .block_temp{
   position: absolute;
   width: 2px;
   height: 13px;
@@ -353,14 +380,42 @@ export default {
   opacity: 0;
   animation: animate 0.1s linear forwards;
 }
+.card .rating .block_temp:nth-child(-n+13){
+  background: rgb(255, 16, 16);
+  box-shadow: 0 0 15px rgb(255, 16, 16), 0 0 30px rgb(255, 16, 16);
+}
+.card .rating .block_hum{
+  position: absolute;
+  width: 2px;
+  height: 13px;
+  background: #000;
+  left: 48%;
+  transform-origin: 50% 60px;
+  opacity: 0;
+  animation: animate 0.1s linear forwards;
+}
+.card .rating .block_hum:nth-child(-n+23){
+  background: rgb(0, 255, 251);
+  box-shadow: 0 0 15px rgb(0, 255, 251), 0 0 30px rgb(0, 255, 251);
+}
+.card .rating .block_eco{
+  position: absolute;
+  width: 2px;
+  height: 13px;
+  background: #000;
+  left: 48%;
+  transform-origin: 50% 60px;
+  opacity: 0;
+  animation: animate 0.1s linear forwards;
+}
+.card .rating .block_eco:nth-child(-n+20){
+  background: rgb(255, 242, 0);
+  box-shadow: 0 0 15px rgb(255, 242, 0), 0 0 30px rgb(255, 242, 0);
+}
 @keyframes animate{
   to{
     opacity: 1;
   }
-}
-.card .rating .block:nth-child(-n+18){
-  background: rgb(0, 34, 255);
-  box-shadow: 0 0 15px rgb(0, 34, 255), 0 0 30px rgb(0, 34, 255);
 }
 .card .rating h2{
   position: absolute;
