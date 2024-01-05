@@ -78,18 +78,27 @@
       >
         <stats-card data-background-color="green">
           <template slot="header">
-            <md-icon>store</md-icon>
+            <md-icon>thermostat</md-icon>
+            <div class="card">
+              <div class="rating">
+                <h2><span class="counter" data-target="90">35</span><sub>°C</sub></h2>
+                <div class="block" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
+              </div>
+            </div>
+          </template>
+          <template>
+            
           </template>
 
           <template slot="content">
-            <p class="category">Revenue</p>
-            <h3 class="title">$34,245</h3>
+            <h5 class="category">Temperature</h5>
+            <h3 class="title"></h3>
           </template>
 
           <template slot="footer">
             <div class="stats">
               <md-icon>date_range</md-icon>
-              Last 24 Hours
+              Last 2 Min.
             </div>
           </template>
         </stats-card>
@@ -109,7 +118,7 @@
               <small>GB</small>
             </h3>
           </template>
-
+       
           <template slot="footer">
             <div class="stats">
               <md-icon class="text-danger">warning</md-icon>
@@ -218,6 +227,7 @@ export default {
   },
   data() {
     return {
+      numbers: [],
       dailySalesChart: {
         data: {
           labels: ["M", "T", "W", "T", "F", "S", "S"],
@@ -306,5 +316,65 @@ export default {
       },
     };
   },
+  mounted() {
+  },
+  methods: {
+    getItemStyle(event){
+      return {
+        transform: `rotate(${7.2*event}deg)`,
+        animationDelay: `${event/15}s`
+      }
+    },
+  },
+  created() {
+    this.numbers = Array.from(Array(51).keys());
+  },
 };
 </script>
+
+<style scoped>
+.card {
+  position: relative;
+  width: 100px;
+  height: 110px;
+}
+.card .rating{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.card .rating .block{
+  position: absolute;
+  width: 2px;
+  height: 13px;
+  background: #000;
+  left: 48%;
+  transform-origin: 50% 60px;
+  opacity: 0;
+  animation: animate 0.1s linear forwards;
+}
+@keyframes animate{
+  to{
+    opacity: 1;
+  }
+}
+.card .rating .block:nth-child(-n+18){
+  background: rgb(0, 34, 255);
+  box-shadow: 0 0 15px rgb(0, 34, 255), 0 0 30px rgb(0, 34, 255);
+}
+.card .rating h2{
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 1em;
+  font-weight: 250;
+  text-align: center;
+}
+.card .rating h2 span{
+  font-size: 2.5em;
+  font-weight: 700;
+
+}
+</style>
