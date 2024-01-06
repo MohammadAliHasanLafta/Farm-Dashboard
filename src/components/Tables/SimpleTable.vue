@@ -2,10 +2,10 @@
   <div>
     <md-table v-model="users" :table-header-color="tableHeaderColor">
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Country">{{ item.country }}</md-table-cell>
-        <md-table-cell md-label="City">{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="Salary">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="Name of vase">{{ item.name }}</md-table-cell>
+        <md-table-cell md-label="Type">{{ item.type }}</md-table-cell>
+        <md-table-cell md-label="Weather Conditions">{{ item.weather }}</md-table-cell>
+        <md-table-cell md-label="Life">{{ item.life }}</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -25,40 +25,40 @@ export default {
       selected: [],
       users: [
         {
-          name: "Dakota Rice",
-          salary: "$36,738",
-          country: "Niger",
-          city: "Oud-Turnhout",
+          name: "Golden cactus",
+          type: "Cactus",
+          life: "∞",
+          weather: "Drought resistant",
         },
         {
-          name: "Minerva Hooper",
-          salary: "$23,738",
-          country: "Curaçao",
-          city: "Sinaai-Waas",
+          name: "Aloe Vera",
+          type: "Cactus",
+          life: "∞",
+          weather: "Drought resistant",
         },
         {
-          name: "Sage Rodriguez",
-          salary: "$56,142",
-          country: "Netherlands",
-          city: "Overland Park",
+          name: "Flowers of stock",
+          type: "Plant",
+          life: "∞",
+          weather: "Low water",
         },
         {
-          name: "Philip Chaney",
-          salary: "$38,735",
-          country: "Korea, South",
-          city: "Gloucester",
+          name: "Primrose",
+          type: "Plant",
+          life: "∞",
+          weather: "Resistant to summer",
         },
         {
-          name: "Doris Greene",
-          salary: "$63,542",
-          country: "Malawi",
-          city: "Feldkirchen in Kārnten",
+          name: "Golden cactus",
+          type: "Cactus",
+          life: "∞",
+          weather: "Drought resistant",
         },
         {
-          name: "Mason Porter",
-          salary: "$78,615",
-          country: "Chile",
-          city: "Gloucester",
+          name: "Flowers of stock",
+          type: "Plant",
+          life: "∞",
+          weather: "Low water",
         },
       ],
     };
