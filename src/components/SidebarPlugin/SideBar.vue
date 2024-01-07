@@ -47,7 +47,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "farm land",
+      default: "farm smart",
     },
     sidebarBackgroundImage: {
       type: String,
@@ -55,7 +55,7 @@ export default {
     },
     imgLogo: {
       type: String,
-      default: require("@/assets/img/logo-image.png"),
+      default: require("@/assets/img/favicon.png"),
     },
     sidebarItemColor: {
       type: String,
