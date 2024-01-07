@@ -14,9 +14,8 @@
             <h4 class="title">Temperature</h4>
             <p class="category">
               <span class="text-success"
-                ><i class="fas fa-long-arrow-alt-down"></i> 10%
+                ><i class="fas fa-long-arrow-alt-down"></i>
               </span>
-              decrease in today temperature.
             </p>
           </template>
 
@@ -41,9 +40,8 @@
             <h4 class="title">Humidity</h4>
             <p class="category">
               <span class="text-success"
-                ><i class="fas fa-long-arrow-alt-up"></i> 9%
+                ><i class="fas fa-long-arrow-alt-up"></i>
               </span>
-              increase in today temperature.
             </p>
           </template>
 
@@ -68,9 +66,8 @@
             <h4 class="title">Soil Moisture</h4>
             <p class="category">
               <span class="text-success"
-                ><i class="fas fa-long-arrow-alt-up"></i> 9%
+                ><i class="fas fa-long-arrow-alt-up"></i>
               </span>
-              increase in today temperature.
             </p>
           </template>
 
@@ -90,7 +87,7 @@
             <md-icon>thermostat</md-icon>
             <div class="card">
               <div class="rating">
-                <h2><span class="counter">{{ thingspeak[7].field1 }}</span><sub>°C</sub></h2>
+                <h2><span class="counter">{{ circleTemp }}</span><sub>°C</sub></h2>
                 <div class="block_temp" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
               </div>
             </div>
@@ -120,7 +117,7 @@
             <md-icon>opacity</md-icon>
             <div class="card">
               <div class="rating">
-                <h2><span class="counter">{{ thingspeak[7].field2 }}</span><sub>%</sub></h2>
+                <h2><span class="counter">{{ circleHum }}</span><sub>%</sub></h2>
                 <div class="block_hum" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
               </div>
             </div>
@@ -147,8 +144,9 @@
             <md-icon>eco</md-icon>
             <div class="card">
               <div class="rating">
-                <h2><span class="counter">{{ thingspeak[7].field3 }}</span></h2>
-                <div class="block_eco" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)"></div>
+                <h2><span :class="getdegTemp">{{ circleSoil }}</span><sub>%</sub></h2>
+                <div class="block_eco" v-for="i in numbers" v-bind:key="getItemStyle(i)" :style="getItemStyle(i)">
+                </div>
               </div>
             </div>
           </template>
@@ -253,9 +251,12 @@ export default {
     return {
       thingspeak: [],
       numbers: [],
+      circleTemp: "",
+      circleHum: "",
+      circleSoil: "",
       dailyTempChart: {
         data: {
-          labels: ["M", "T", "W", "T", "F", "S", "S"],
+          labels: [],
           series: [[]],
         },
         options: {
@@ -274,7 +275,7 @@ export default {
       },
       dailySoilChart: {
         data: {
-          labels: ["M", "T", "W", "T", "F", "S", "S"],
+          labels: [],
           series: [[]],
         },
         options: {
@@ -282,7 +283,7 @@ export default {
             tension: 0,
           }),
           low: 0,
-          high: 800, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+          high: 1100, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
           chartPadding: {
             top: 0,
             right: 0,
@@ -293,7 +294,7 @@ export default {
       },
       dailyHumChart: {
         data: {
-          labels: ["M", "T", "W", "T", "F", "S", "S"],
+          labels: [],
           series: [[]],
         },
         options: {
@@ -318,17 +319,27 @@ export default {
     this.fetchData();
     this.numbers = Array.from(Array(51).keys());
   },
+  computed: {
+  },
   methods: {
     fetchData() {
       const url = 'https://api.thingspeak.com/channels/2389978/feeds.json?api_key=7F5ZOP8I2C34NSN9&results=8';
       axios.get(url)
         .then(response => {
           this.thingspeak = response.data.feeds;
-          // this.dailyTempChart.data.series.pop();
+
+          this.circleTemp = this.thingspeak[7].field1.slice(0,4);
+          this.circleHum = this.thingspeak[7].field2.slice(0,4);
+          this.circleSoil = parseInt((parseInt(this.thingspeak[7].field3))*100/1023);          
+
           for (var i = 1; i < this.thingspeak.length+2; i++) {
             this.dailyTempChart.data.series[0].push(parseInt(this.thingspeak[i].field1));
+            this.dailyTempChart.data.labels.push(this.thingspeak[i].created_at.slice(12,16));
             this.dailyHumChart.data.series[0].push(parseInt(this.thingspeak[i].field2));
+            this.dailyHumChart.data.labels.push(this.thingspeak[i].created_at.slice(12,16));
             this.dailySoilChart.data.series[0].push(parseInt(this.thingspeak[i].field3));
+            this.dailySoilChart.data.labels.push(this.thingspeak[i].created_at.slice(12,16));
+            console.log(this.dailySoilChart.data.labels[i]);
           }
         })
         .catch(error => {
