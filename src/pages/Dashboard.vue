@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div v-if="dailyTempChart.data.labels.length == 0">
+  </div>
+  <div v-else-if="dailyTempChart.data.labels.length != 0">
     <div class="content">
     <div class="md-layout">
       <div
@@ -210,7 +212,7 @@
       >
         <nav-tabs-card>
           <template slot="content">
-            <span class="md-nav-tabs-title">Tasks:</span>
+            <span class="md-nav-tabs-title"></span>
             <md-tabs class="md-success" md-alignment="left">
               <md-tab id="tab-home" md-label="Tasks" md-icon="add_task">
                 <nav-tabs-table></nav-tabs-table>
@@ -323,7 +325,7 @@ export default {
   },
   created() {
     this.fetchData();
-    this.numbers = Array.from(Array(51).keys());
+    this.numbers = Array.from(Array(50).keys());
   },
   computed: {
   },
@@ -339,14 +341,14 @@ export default {
           this.circleSoil = parseInt((parseInt(this.thingspeak[7].field3))*100/1023);          
           this.endDate = this.thingspeak[7].created_at.slice(0,10);
           this.calculateDateDifference()
-          
+
           for (var i = 0; i < this.thingspeak.length+1; i++) {
             this.dailyTempChart.data.series[0].push(parseInt(this.thingspeak[i].field1));
-            this.dailyTempChart.data.labels.push(this.thingspeak[i].created_at.slice(11,16));
+            this.dailyTempChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
             this.dailyHumChart.data.series[0].push(parseInt(this.thingspeak[i].field2));
-            this.dailyHumChart.data.labels.push(this.thingspeak[i].created_at.slice(11,16));
+            this.dailyHumChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
             this.dailySoilChart.data.series[0].push(parseInt(this.thingspeak[i].field3));
-            this.dailySoilChart.data.labels.push(this.thingspeak[i].created_at.slice(11,16));
+            this.dailySoilChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
           }
         })
         .catch(error => {
@@ -386,8 +388,8 @@ export default {
       }
     },
     getItemStyleSoil(event){
-      let circlechild = Math.floor(((parseInt(this.circleSoil))*50)/100);;
-      if (event <= circlechild) {
+      let circlechild = Math.floor(((parseInt(this.circleSoil))*50)/100);
+      if (event <= circlechild-1) {
           return {
           transform: `rotate(${7.2*event}deg)`,
           animationDelay: `${event/15}s`,
@@ -407,6 +409,13 @@ export default {
       const differenceInTime = end.getTime() - start.getTime();
       const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
       this.dateDifference = differenceInDays;
+    },
+    convertToIranTime(originalTime) {
+      const utcTime = new Date(originalTime); // Get the original time in UTC
+      const iranTimezoneOffset = 3.5 * 60; // Iran time zone offset in minutes (3.5 hours ahead of UTC)
+      const iranTime = new Date(utcTime.getTime() + iranTimezoneOffset * 60 * 1000); // Add the offset to the UTC time
+
+      return iranTime.toISOString(); // Return the Iran time in ISO 8601 format
     },
   },
 };
