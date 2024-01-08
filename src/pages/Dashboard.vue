@@ -1,7 +1,18 @@
 <template>
-  <div v-if="dailyTempChart.data.labels.length == 0">
+  <div v-if="lable == 0">
+    <div class="page-loader">
+        <div class="cube">F<img src="@/assets/img/favicon.png"></div>
+        <div class="cube">A</div>
+        <div class="cube">R</div>
+        <div class="cube">M</div>
+        <div class="cube">S</div>
+        <div class="cube">M</div>
+        <div class="cube">A</div>
+        <div class="cube">R</div>
+        <div class="cube">T<img src="@/assets/img/favicon.png"></div>
+    </div>
   </div>
-  <div v-else-if="dailyTempChart.data.labels.length != 0">
+  <div v-else-if="lable != 0">
     <div class="content">
     <div class="md-layout">
       <div
@@ -260,6 +271,7 @@ export default {
   },
   data() {
     return {
+      lable: 0,
       startDate: '2023-12-28',
       endDate: '',
       dateDifference: null,
@@ -450,7 +462,57 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+$colors: #8cc271, #69beeb, #f5aa39, #e9643b, #58b928, #2685b9, #cf8921, #eb4a19, #fba68c;
+.page-loader {
+  position:fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #333;
+  z-index: 999;
+}
+.cube {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+  font-size: 60px;
+  color: #000;
+  font-weight: 300;
+
+  @for $i from 1 through length($colors) {
+    &:nth-child(#{$i}) {
+      background-color: nth($colors, $i );
+    }
+  }
+
+  &:first-child {
+    animation: left 1s infinite; 
+  }
+  &:last-child {
+    animation: right 1s infinite 0.5s; 
+  }
+}
+@keyframes left {
+  40%{
+    transform: translate(-60px);
+  }
+  50%{
+    transform: translate(0);
+  }
+}
+@keyframes right {
+  40%{
+    transform: translate(60px);
+  }
+  50%{
+    transform: translate(0);
+  }
+}
 .card {
   position: relative;
   width: 100px;
