@@ -31,13 +31,13 @@ export default {
       selected: [],
       users: [
         {
-          name: 'Sign contract for "What are conference organizers afraid of?"',
+          name: 'Water the vase.',
         },
         {
-          name: "Lines From Great Russian Literature? Or E-mails From My Boss?",
+          name: "Set the room temperature to 25 degrees Celsius.",
         },
         {
-          name: "Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit",
+          name: "Add fertilizer to the potting soil.",
         },
       ],
     };
