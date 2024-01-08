@@ -6,15 +6,6 @@
           <li>
             <a href="https://github.com/MohammadAliHasanLafta">Github</a>
           </li>
-          <!-- <li>
-            <a href="https://creative-tim.com/presentation"> About Us </a>
-          </li>
-          <li>
-            <a href="https://github.com/MohammadAliHasanLafta"> Github </a>
-          </li>
-          <li>
-            <a href="https://www.creative-tim.com/license"> Licenses </a>
-          </li> -->
         </ul>
       </nav>
       <div class="copyright text-center">
