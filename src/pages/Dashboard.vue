@@ -25,7 +25,7 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>access_time</md-icon>
-              updated 4 minutes ago
+              Updated in the last {{ timeDifference }}
             </div>
           </template>
         </chart-card>
@@ -51,7 +51,7 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>access_time</md-icon>
-              updated 4 minutes ago
+              Updated in the last {{ timeDifference }}
             </div>
           </template>
         </chart-card>
@@ -77,7 +77,9 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>access_time</md-icon>
-              updated 4 minutes ago
+              <div class="stats">
+                {{ timeDifference }} ago.
+              </div>
             </div>
           </template>
         </chart-card>
@@ -108,7 +110,9 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>date_range</md-icon>
-              Last 3 Min.
+              <div class="stats">
+                {{ timeDifference }} ago.
+              </div>
             </div>
           </template>
         </stats-card>
@@ -135,7 +139,9 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>date_range</md-icon>
-              Last 3 Min.
+              <div class="stats">
+                {{ timeDifference }} ago.
+              </div>
             </div>
           </template>
         </stats-card>
@@ -163,7 +169,9 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>date_range</md-icon>
-              Last 3 Min.
+              <div class="stats">
+                {{ timeDifference }} ago.
+              </div>
             </div>
           </template>
         </stats-card>
@@ -256,7 +264,10 @@ export default {
     return {
       startDate: '2023-12-28',
       endDate: '',
-      dateDifference: '',
+      dateDifference: null,
+      startTime: '',
+      endTime: '',
+      timeDifference: null,
       thingspeak: [],
       numbers: [],
       circleTemp: "",
@@ -338,17 +349,25 @@ export default {
 
           this.circleTemp = this.thingspeak[7].field1.slice(0,4);
           this.circleHum = this.thingspeak[7].field2.slice(0,4);
-          this.circleSoil = parseInt((parseInt(this.thingspeak[7].field3))*100/1023);          
+          this.circleSoil = parseInt((parseInt(this.thingspeak[7].field3))*100/1023);  
+
           this.endDate = this.thingspeak[7].created_at.slice(0,10);
-          this.calculateDateDifference()
+          this.calculateDateDifference();
+
+          this.startTime = this.thingspeak[7].created_at.slice(0,20);
+          this.endTime = new Date();
+          this.calculateTimeDifference();
 
           for (var i = 0; i < this.thingspeak.length+1; i++) {
             this.dailyTempChart.data.series[0].push(parseInt(this.thingspeak[i].field1));
-            this.dailyTempChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
+            this.dailyTempChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20)))
+            .slice(11,16));
             this.dailyHumChart.data.series[0].push(parseInt(this.thingspeak[i].field2));
-            this.dailyHumChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
+            this.dailyHumChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20)))
+            .slice(11,16));
             this.dailySoilChart.data.series[0].push(parseInt(this.thingspeak[i].field3));
-            this.dailySoilChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20))).slice(11,16));
+            this.dailySoilChart.data.labels.push((this.convertToIranTime(this.thingspeak[i].created_at.slice(0,20)))
+            .slice(11,16));
           }
         })
         .catch(error => {
@@ -416,6 +435,18 @@ export default {
       const iranTime = new Date(utcTime.getTime() + iranTimezoneOffset * 60 * 1000); // Add the offset to the UTC time
 
       return iranTime.toISOString(); // Return the Iran time in ISO 8601 format
+    },
+    calculateTimeDifference() {
+      const start = new Date(this.startTime);
+      const end = new Date(this.endTime);
+      const diffInMillis = end.getTime() - start.getTime(); // Calculate the time difference in milliseconds
+
+      // Convert the time difference to hours, minutes, and seconds
+      const hours = Math.floor(diffInMillis / (1000 * 60 * 60));
+      const minutes = Math.floor((diffInMillis % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffInMillis % (1000 * 60)) / 1000);
+
+      this.timeDifference = `${hours}h ${minutes}m ${seconds}s`; // Format the time difference as desired
     },
   },
 };
