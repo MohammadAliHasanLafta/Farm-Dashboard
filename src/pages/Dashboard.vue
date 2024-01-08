@@ -1,5 +1,5 @@
 <template>
-  <div v-if="lable == 0">
+  <div v-if="dailyTempChart.data.labels.length == 0">
     <div class="page-loader">
         <div class="cube">F<img src="@/assets/img/favicon.png"></div>
         <div class="cube">A</div>
@@ -12,7 +12,7 @@
         <div class="cube">T<img src="@/assets/img/favicon.png"></div>
     </div>
   </div>
-  <div v-else-if="lable != 0">
+  <div v-else-if="dailyTempChart.data.labels.length != 0">
     <div class="content">
     <div class="md-layout">
       <div
@@ -481,7 +481,7 @@ $colors: #8cc271, #69beeb, #f5aa39, #e9643b, #58b928, #2685b9, #cf8921, #eb4a19,
   height: 70px;
   margin-right: 10px;
   font-size: 60px;
-  color: #000;
+  color: #1a0000;
   font-weight: 300;
 
   @for $i from 1 through length($colors) {
