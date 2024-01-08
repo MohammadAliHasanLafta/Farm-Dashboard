@@ -77,9 +77,7 @@
           <template slot="footer">
             <div class="stats">
               <md-icon>access_time</md-icon>
-              <div class="stats">
-                {{ timeDifference }} ago.
-              </div>
+              Updated in the last {{ timeDifference }}
             </div>
           </template>
         </chart-card>
