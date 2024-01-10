@@ -54,38 +54,9 @@
         <li class="header-title d-flex justify-content-center">
           Thank you for sharing!
         </li>
-
-        <li class="button-container">
-          <social-sharing
-            :url="shareUrl"
-            inline-template
-            title="Vue Material Dashboard - Admin Template for Vue.js"
-            hashtags="vuejs, dashboard, vuematerial"
-            twitter-user="creativetim"
-          >
-            <div class="centered-buttons">
-              <ShareNetwork
-                title=""
-                url="https://github.com/MohammadAliHasanLafta"
-                network="facebook"
-                class="md-button md-round md-just-icon md-facebook"
-              >
-                <i class="fab fa-facebook-f"></i>
-              </ShareNetwork>
-              <ShareNetwork
-                url="https://github.com/MohammadAliHasanLafta"
-                title=""
-                network="twitter"
-                class="md-button md-round md-just-icon md-twitter"
-              >
-                <i class="fab fa-twitter"></i>
-              </ShareNetwork>
-            </div>
-          </social-sharing>
-        </li>
         <li class="github-buttons">
           <gh-btns-star
-            slug="creativetimofficial/vue-material-dashboard"
+            slug="https://github.com/MohammadAliHasanLafta/Farm-Dashboard"
             show-count
           ></gh-btns-star>
         </li>
@@ -106,7 +77,7 @@ export default {
   data() {
     return {
       documentationLink:
-        "https://creativetimofficial.github.io/vue-material-dashboard/documentation",
+        "https://github.com/MohammadAliHasanLafta/Farm-Dashboard",
       shareUrl: "https://github.com/MohammadAliHasanLafta",
       buyUrl: "",
       freeUrl: "https://github.com/MohammadAliHasanLafta",
