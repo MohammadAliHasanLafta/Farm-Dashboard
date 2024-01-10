@@ -3,10 +3,9 @@
 </template>
 
 <script>
-import { API_KEY } from "./API_KEY";
 import { Loader, LoaderOptions } from "google-maps";
 
-const loader = new Loader(API_KEY);
+const loader = new Loader();
 export default {
   mounted() {
     loader.load().then(function (google) {
