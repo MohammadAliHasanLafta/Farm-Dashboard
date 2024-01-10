@@ -13,7 +13,7 @@
       </a>
 
       <a
-        href="https://www.creative-tim.com/product/vue-material-dashboard"
+        href="https://github.com/MohammadAliHasanLafta"
         target="_blank"
         class="simple-text logo-normal"
       >
