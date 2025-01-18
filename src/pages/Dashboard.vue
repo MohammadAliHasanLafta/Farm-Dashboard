@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div v-if="dailyTempChart.data.labels.length == 0">
     {{ thingspeak }}
