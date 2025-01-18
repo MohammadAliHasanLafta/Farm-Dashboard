@@ -373,13 +373,13 @@ export default {
         .get(url)
         .then((response) => {
           this.thingspeak = response.data;
-          console.log(this.thingspeak);
-          console.log("------------------------------------");
+          // console.log(this.thingspeak);
+          // console.log("------------------------------------");
 
           if (this.thingspeak.length > 0) {
             // فقط 10 مقدار آخر را انتخاب کنید
             const lastTenRecords = this.thingspeak.slice(0, 8).reverse();
-            console.log(lastTenRecords);
+            // console.log(lastTenRecords);
 
             // مقدار حلقه‌ها فقط برای 10 مقدار آخر انجام می‌شود
             this.circleTemp = String(lastTenRecords[6].temperature).slice(0, 4);
