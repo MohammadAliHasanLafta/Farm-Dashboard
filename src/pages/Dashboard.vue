@@ -413,7 +413,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.error("Error fetching data from API:", error);
+          // console.error("Error fetching data from API:", error);
         });
     },
     getItemStyleTemp(event) {
@@ -492,7 +492,7 @@ export default {
         // تبدیل به فرمت موردنظر و بازگشت
         return iranTime.toISOString().slice(0, 19).replace("T", " ");
       } catch (error) {
-        console.error("Error in convertToIranTime:", error);
+        // console.error("Error in convertToIranTime:", error);
         return "Invalid Time";
       }
     },
