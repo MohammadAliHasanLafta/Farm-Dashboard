@@ -1,7 +1,6 @@
 /* eslint-disable */
 <template>
   <div v-if="dailyTempChart.data.labels.length == 0">
-    {{ thingspeak }}
     <div class="page-loader">
       <div class="cube">F<img src="@/assets/img/favicon.png" /></div>
       <div class="cube">A</div>
@@ -95,6 +94,7 @@
             </template>
           </chart-card>
         </div>
+        <!-- <div class="card-container"> -->
         <div
           class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25"
         >
@@ -166,6 +166,7 @@
             </template>
           </stats-card>
         </div>
+
         <div
           class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25"
         >
@@ -230,16 +231,46 @@
             </template>
           </stats-card>
         </div>
+        <!-- </div> -->
+        <!-- /////// -->
         <div
           class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50"
         >
           <md-card>
-            <md-card-header data-background-color="orange">
-              <h4 class="title">Vase Stats</h4>
-              <p class="category">New vase on 15th September, 2023</p>
+            <md-card-header data-background-color="blue">
+              <h4 class="title">Water Pump Control</h4>
+              <p class="category">Easily manage your water pump</p>
             </md-card-header>
+
             <md-card-content>
-              <ordered-table table-header-color="orange"></ordered-table>
+              <!-- وضعیت پمپ -->
+              <div class="pump-status">
+                <h5 class="status-label">
+                  Pump Status:
+                  <span
+                    :class="{
+                      'status-on': pumpStatus === 'on',
+                      'status-off': pumpStatus === 'off',
+                    }"
+                  >
+                    {{ pumpStatus === "on" ? "ON (Running)" : "OFF (Stopped)" }}
+                  </span>
+                </h5>
+              </div>
+
+              <!-- دکمه کنترل پمپ -->
+              <div class="pump-controls">
+                <button
+                  class="btn-control"
+                  :class="{
+                    'btn-on': pumpStatus === 'off',
+                    'btn-off': pumpStatus === 'on',
+                  }"
+                  @click="togglePump"
+                >
+                  {{ pumpStatus === "on" ? "Turn Off" : "Turn On" }}
+                </button>
+              </div>
             </md-card-content>
           </md-card>
         </div>
@@ -272,13 +303,7 @@
 
 <script>
 import axios from "axios";
-import {
-  StatsCard,
-  ChartCard,
-  NavTabsCard,
-  NavTabsTable,
-  OrderedTable,
-} from "@/components";
+import { StatsCard, ChartCard, NavTabsCard, NavTabsTable } from "@/components";
 
 export default {
   components: {
@@ -286,10 +311,10 @@ export default {
     ChartCard,
     NavTabsCard,
     NavTabsTable,
-    OrderedTable,
   },
   data() {
     return {
+      pumpStatus: "off",
       lable: 0,
       startDate: "2023-12-28",
       endDate: "",
@@ -383,16 +408,17 @@ export default {
             // console.log(lastTenRecords);
 
             // مقدار حلقه‌ها فقط برای 10 مقدار آخر انجام می‌شود
-            this.circleTemp = String(lastTenRecords[6].temperature).slice(0, 4);
-            this.circleHum = String(lastTenRecords[6].humidity).slice(0, 4);
+            this.circleTemp = String(lastTenRecords[7].temperature).slice(0, 4);
+            this.circleHum = String(lastTenRecords[7].humidity).slice(0, 4);
             this.circleSoil = Math.round(
-              (parseInt(lastTenRecords[6].soilMoisture) * 100) / 1023
+              (parseInt(lastTenRecords[7].soilMoisture) * 100) / 1023
             );
 
             this.endDate = lastTenRecords[0].loggedAt.slice(0, 10);
             this.calculateDateDifference();
 
-            this.startTime = lastTenRecords[0].loggedAt;
+            this.startTime = lastTenRecords[7].loggedAt;
+            // console.log(this.startDate);
             this.endTime = new Date();
             this.calculateTimeDifference();
 
@@ -414,6 +440,41 @@ export default {
         })
         .catch((error) => {
           // console.error("Error fetching data from API:", error);
+        });
+    },
+    // تغییر وضعیت پمپ بدون ریلود داده‌ها
+    togglePump() {
+      const action = this.pumpStatus === "on" ? "off" : "on"; // تصمیم‌گیری بر اساس وضعیت فعلی
+      const url = `https://smartpot.runasp.net/api/Pump/${action}`; // آدرس API برای روشن یا خاموش کردن پمپ
+
+      // ارسال درخواست POST به API
+      axios
+        .post(url)
+        .then(() => {
+          // تغییر وضعیت محلی پمپ
+          this.pumpStatus = action;
+          // console.log(`Pump turned ${action}.`); // پیام موفقیت برای دیباگ
+        })
+        .catch((error) => {
+          // مدیریت خطا در صورت وقوع مشکل
+          // console.error("Error toggling pump status:", error);
+        });
+    },
+
+    // دریافت وضعیت پمپ از API (برای بارگذاری اولیه)
+    getPumpStatus() {
+      const url = "https://smartpot.runasp.net/api/Pump/status";
+      axios
+        .get(url)
+        .then((response) => {
+          if (response.data.status === "on" || response.data.status === "off") {
+            this.pumpStatus = response.data.status;
+          } else {
+            // console.error("Invalid pump status:", response.data);
+          }
+        })
+        .catch((error) => {
+          // console.error("Error fetching pump status:", error);
         });
     },
     getItemStyleTemp(event) {
@@ -522,6 +583,12 @@ export default {
 <style lang="scss" scoped>
 $colors: #8cc271, #69beeb, #f5aa39, #e9643b, #58b928, #2685b9, #cf8921, #eb4a19,
   #fba68c;
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* کارت‌ها در صورت کمبود فضا به خط بعد می‌روند */
+  justify-content: space-between; /* فاصله مساوی بین کارت‌ها */
+  gap: 15px; /* فاصله بین کارت‌ها */
+}
 .page-loader {
   position: fixed;
   display: flex;
@@ -629,5 +696,61 @@ $colors: #8cc271, #69beeb, #f5aa39, #e9643b, #58b928, #2685b9, #cf8921, #eb4a19,
 .card .rating h2 span {
   font-size: 2.5em;
   font-weight: 700;
+}
+
+// .md-card {
+//   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+//   border-radius: 8px;
+//   overflow: hidden;
+//   background-color: #f4f7fa;
+// }
+
+/* وضعیت پمپ */
+.pump-status {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.status-label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.status-on {
+  color: #4caf50; /* سبز برای وضعیت روشن */
+}
+
+.status-off {
+  color: #f44336; /* قرمز برای وضعیت خاموش */
+}
+
+/* دکمه‌های کنترل پمپ */
+.pump-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-control {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-control.btn-on {
+  background-color: #4caf50; /* سبز برای روشن کردن */
+  color: #fff;
+}
+
+.btn-control.btn-off {
+  background-color: #f44336; /* قرمز برای خاموش کردن */
+  color: #fff;
+}
+
+.btn-control:hover {
+  filter: brightness(1.1);
 }
 </style>
